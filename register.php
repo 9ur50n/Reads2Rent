@@ -1,3 +1,4 @@
+<?php include('server.php'); ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -32,10 +33,11 @@
             </span>
           </h1>
         <!-- Register form -->
-        <form id="RegisterForm" class="bg-white bg-opacity-70 dark:bg-gray-800 dark:bg-opacity-70 shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full max-w-md" method="post"  action="register0.php">
-            <div class="input-name">
-                <label class="block text-gray-700 dark:text-white text-sm font-bold mb-2" for="name">Name</label>
-                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="name" type="text" placeholder="Name" name="name" required>
+        <form id="RegisterForm" class="bg-white bg-opacity-70 dark:bg-gray-800 dark:bg-opacity-70 shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full max-w-md" method="post"  action="register.php">
+          <?php include('errors.php'); ?>
+            <div class="input-Email">
+                <label class="block text-gray-700 dark:text-white text-sm font-bold mb-2" for="name">Email</label>
+                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="email" type="text" placeholder="Example@skiff.com" name="email" required>
             </div>
             <div class="input-username">
                 <label class="block text-gray-700 dark:text-white text-sm font-bold mb-2" for="username">Username</label>
@@ -47,10 +49,14 @@
             </div>
             <div class="input-password">
                 <label class="block text-gray-700 dark:text-white text-sm font-bold mb-2" for="password">Password</label>
-                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="password" type="password" placeholder="******************" name="password" required>
+                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="password" type="password" placeholder="******************" name="password_1" required>
+            </div>
+            <div class="input-password 2">
+                <label class="block text-gray-700 dark:text-white text-sm font-bold mb-2" for="password">Re-Enter Password</label>
+                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="password" type="password" placeholder="******************" name="password_2" required>
             </div>
             <div class="flex items-center justify-between">
-                <button onclick="redi()" type="submit" id="submit" name="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" >register</button>
+                <button onclick="redi()" type="submit" id="submit" name="reg_user" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" >register</button>
                 <a class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800" href="http://localhost/read2rent/login.php">Have an account?</a>
             </div>
           </form>
