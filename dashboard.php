@@ -1,3 +1,13 @@
+<?php 
+session_start();
+
+if (!isset($_SESSION['username'])) {
+  echo "<script>window.location.href='http://localhost/read2rent/login.php';
+				  alert('you have to register first!');
+				 </script>";
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -148,12 +158,12 @@
       </div>
     </article>
   </template>
-  <!-- END BOOK TEMPLATE -->
+    <!-- END BOOK TEMPLATE -->
   
-  
+    
   
   <div class="layout">
-    <!-- HEADER -->
+    <!-- HEADER  -->
     <header class="header">
       <h1 class="logo">Reads2Rent</h1>
     </header>
@@ -307,7 +317,7 @@
     </div>
   </div>
   
-  <!-- CSS for the modal -->
+   CSS for the modal 
   <style>
     /* The Modal */
     .modal {
@@ -383,7 +393,7 @@
     }
     </style>
   
-  <!-- JavaScript to control the modal -->
+   JavaScript to control the modal 
   <script>
     // Get the modal
     var modal = document.getElementById("myModal");
@@ -426,8 +436,8 @@
     };
   </script>
 
-<!-- Logout Button -->
-<button id="logoutButton" style="
+ Logout Button 
+<button method="GET" id="logoutButton"  style="
   position: fixed;
   top: 0.90rem; /* Changed from bottom to top */
   right: 5rem;
@@ -442,10 +452,20 @@
   z-index: 1000;
   transition: background-color 0.3s ease, transform 0.3s ease;
 ">
-  <i class="fas fa-sign-out-alt"></i>
+  <i class="fas fa-sign-out-alt"></i> 
 </button>
-
-  
-  <!-- INCLUDE DRAGULA.JS -->
+<script>
+  const logoutButton = document.getElementById('logoutButton');
+  logoutButton.addEventListener('click', logout);
+  function logout() {
+  window.location.href = 'http://localhost/read2rent/login.php';
+  <?php session_destroy();
+  unset($_SESSION['username']);
+?>
+  alert('you have succesfully logout!');
+  }
+  </script>
+   INCLUDE DRAGULA.JS 
   <script src="https://unpkg.com/dragula@3.7.2/dist/dragula.min.js"></script>
   <script src="dashboard.js"></script>
+
