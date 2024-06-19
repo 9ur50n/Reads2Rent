@@ -86,11 +86,3 @@ document.addEventListener('DOMContentLoaded', () => {
   document.body.appendChild(darkModeToggle);
 });
 
-// Function for logout
-function logout() {
-  window.location.href = 'login.html';
-}
-
-  // Logout button
-  const logoutButton = document.getElementById('logoutButton');
-  logoutButton.addEventListener('click', logout);

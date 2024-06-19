@@ -68,3 +68,4 @@ body {
 .dark .jumbo::after {
     background-image: var(--stripesDark), var(--rainbow);
 }
+
