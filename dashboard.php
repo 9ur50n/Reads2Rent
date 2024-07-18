@@ -1,10 +1,16 @@
 <?php 
 session_start();
-
-if (!isset($_SESSION['username'])) {
-  echo "<script>window.location.href='http://localhost/read2rent/login.php';
-				  alert('you have to register first!');
-				 </script>";
+ if(!isset($_SESSION['username'])){
+  $user = "root";
+ $pass = ""; 
+ $host = "localhost";
+ $dbname= "read2rent";
+ $db= mysqli_connect($host, $user, $pass, $dbname);
+  $query2 = 'SELECT username,empType FROM Cuser where (Select max(cusID) from Cuser)';
+  $row=mysqli_query($db, $query2);
+  $row1= mysqli_fetch_assoc($row);
+  $_SESSION['username'] = $row1['username'];
+  $_SESSION['empType'] = $row1['empType'];
 }
 
 ?>
@@ -166,7 +172,12 @@ if (!isset($_SESSION['username'])) {
     <!-- HEADER  -->
     <header class="header">
       <h1 class="logo">Reads2Rent</h1>
+    
+      <!--<div class="header__search search">
+        <input type="text" placeholder="Search..">
+      </div>-->
     </header>
+    
   
     <!-- FEATURED STAGE -->
     <div class="stage js-drag-container">
@@ -287,37 +298,37 @@ if (!isset($_SESSION['username'])) {
       </div>
     </main>
   
-  
+    <!-- 
     <!-- SHOPPING CART -->
-    <div class="cart js-drag-container">
-      <h2 class="capitals"><i class="fas fa-shopping-cart"></i> Cart</h2>
+    <!-- <div class="cart js-drag-container"> -->
+      <!-- <h2 class="capitals"><i class="fas fa-shopping-cart"></i> Cart</h2> -->
 
       
-      <book-element color="#067682">
+      <!-- <book-element color="#067682">
         <img slot="cover" src="https://assets.codepen.io/1256430/don-quixote.avif" alt="" />
         <span slot="title">Don Quixote</span>
         <span slot="author">Miguel de Cervantes</span>
-      </book-element>
+      </book-element> -->
   
-    </div>
+    </div> 
   </div>
 
   <!-- HTML for the modal -->
 <div id="myModal" class="modal">
     <div class="modal-content">
       <span class="close">&times;</span>
-      <h2>Enter your details</h2>
-      <form id="purchaseForm">
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required><br><br>
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required><br><br>
-        <button type="submit">Submit</button>
+      <h2>Get Now</h2>
+      <form id="purchaseForm" method="post" action="cart.php">
+        <label for="name">book name:</label>
+        <input type="text" id="title" name="title" required><br><br>
+        <label for="name">Rent or Buy?</label>
+        <input type="text" id="type" name="type" required><br><br>
+        <button onclick="redi()" id="submit" type="submit" name="buybook" >Submit</button>
       </form>
     </div>
   </div>
   
-   CSS for the modal 
+
   <style>
     /* The Modal */
     .modal {
@@ -369,31 +380,10 @@ if (!isset($_SESSION['username'])) {
         font-weight: bold;
     }
     
-    .modal-form input[type="text"],
-    .modal-form input[type="email"],
-    .modal-form button[type="submit"] {
-        width: 100%;
-        padding: 10px;
-        margin-top: 8px;
-        margin-bottom: 20px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        box-sizing: border-box;
-    }
-    
-    .modal-form button[type="submit"] {
-        background-color: #4CAF50;
-        color: #fff;
-        border: none;
-        cursor: pointer;
-    }
-    
-    .modal-form button[type="submit"]:hover {
-        background-color: #45a049;
-    }
+   
     </style>
   
-   JavaScript to control the modal 
+
   <script>
     // Get the modal
     var modal = document.getElementById("myModal");
@@ -418,28 +408,24 @@ if (!isset($_SESSION['username'])) {
       }
     }
   
-    // Function to handle form submission
-    document.getElementById("purchaseForm").onsubmit = function(event) {
-      event.preventDefault(); // Prevent default form submission
-  
-      // Get form data
-      var formData = new FormData(event.target);
-      var name = formData.get("name");
-      var email = formData.get("email");
-  
-      // You can perform further actions with the form data here, such as validation, sending data to a server, etc.
-      console.log("Name: " + name);
-      console.log("Email: " + email);
-  
-      // Close the modal after form submission
-      modal.style.display = "none";
-    };
+
   </script>
 
- Logout Button 
-<button method="GET" id="logoutButton"  style="
+
+
+
+
+
+  <script src="https://unpkg.com/dragula@3.7.2/dist/dragula.min.js"></script>
+  <script src="dashboard.js"></script>
+
+
+  <button style="position: fixed; top: 1rem; right: 1rem; padding: 0.65rem; z-index: 1000; background-color: rgb(0, 0, 0); color: rgb(255, 255, 255); border: none; border-radius: 2px; box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 8px; cursor: pointer; font-size: 1rem; transition: background-color 0.3s ease 0s, transform 0.3s ease 0s;"><i class="fas fa-moon"></i></button> 
+
+<!-- Logout Button -->
+<button id="logoutButton" style="
   position: fixed;
-  top: 0.90rem; /* Changed from bottom to top */
+  top: 0.90rem;
   right: 5rem;
   padding: 0.70rem 1rem;
   background-color: #000000;
@@ -454,18 +440,62 @@ if (!isset($_SESSION['username'])) {
 ">
   <i class="fas fa-sign-out-alt"></i> 
 </button>
+
 <script>
   const logoutButton = document.getElementById('logoutButton');
   logoutButton.addEventListener('click', logout);
   function logout() {
-  window.location.href = 'http://localhost/read2rent/login.php';
-  <?php session_destroy();
-  unset($_SESSION['username']);
-?>
-  alert('you have succesfully logout!');
+    window.location.href = 'http://localhost/read2rent/login.php';
+    <?php
+
+      session_destroy();
+      unset($_SESSION['username']);
+
+    ?>
+    alert('you have successfully logged out!');
   }
-  </script>
-   INCLUDE DRAGULA.JS 
-  <script src="https://unpkg.com/dragula@3.7.2/dist/dragula.min.js"></script>
-  <script src="dashboard.js"></script>
+</script>
+
+<!-- Include Dragula.js -->
+<script src="https://unpkg.com/dragula@3.7.2/dist/dragula.min.js"></script>
+<script src="dashboard.js"></script>
+
+<!-- Dark Mode Button -->
+<button style="
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  padding: 0.65rem;
+  z-index: 1000;
+  background-color: rgb(0, 0, 0);
+  color: rgb(255, 255, 255);
+  border: none;
+  border-radius: 2px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+">
+  <i class="fas fa-moon"></i>
+</button>
+<!-- profile redirect Button -->
+ <form action="redirect.php">
+<button id="profile" name="profile" style="
+  position: fixed;
+  top: 1rem;
+  right: 10rem;
+  padding: 0.65rem;
+  z-index: 1000;
+  background-color: rgb(0, 0, 0);
+  color: rgb(255, 255, 255);
+  border: none;
+  border-radius: 2px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+">
+  <i class="fa-solid fa-user"></i>
+</button>
+ </form>
 

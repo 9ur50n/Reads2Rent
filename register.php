@@ -1,4 +1,4 @@
-<?php include('server.php'); ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -33,8 +33,8 @@
             </span>
           </h1>
         <!-- Register form -->
-        <form id="RegisterForm" class="bg-white bg-opacity-70 dark:bg-gray-800 dark:bg-opacity-70 shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full max-w-md" method="post"  action="register.php">
-          <?php include('errors.php'); ?>
+        <form id="RegisterForm" class="bg-white bg-opacity-70 dark:bg-gray-800 dark:bg-opacity-70 shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full max-w-md" method="post"  action="server.php">
+
             <div class="input-Email">
                 <label class="block text-gray-700 dark:text-white text-sm font-bold mb-2" for="name">Email</label>
                 <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="email" type="text" placeholder="Example@skiff.com" name="email" required>
@@ -48,8 +48,8 @@
                 <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="adress" type="text" placeholder="no,st,area,ZIP code,city,state" name="adress" required>
             </div>
             <div class="input-password">
-                <label class="block text-gray-700 dark:text-white text-sm font-bold mb-2" for="password">Password</label>
-                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="password" type="password" placeholder="******************" name="password_1" required pattern="(?=.*?[#?!@$%^&*-\]\[])">
+                <label class="block text-gray-700 dark:text-white text-sm font-bold mb-2" for="password">Password [must contain min 1 upper and undercase letter,1 digit, 1 special character and min 8 character]</label>
+                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="password" type="password" placeholder="******************" name="password_1" required>
             </div>
             <div class="input-password 2">
                 <label class="block text-gray-700 dark:text-white text-sm font-bold mb-2" for="password">Re-Enter Password</label>

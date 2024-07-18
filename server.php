@@ -1,5 +1,4 @@
 <?php 
-
 session_start();
 
 //database connection
@@ -8,8 +7,11 @@ $pass = "";
 $host = "localhost";
 $dbname= "read2rent";
 $errors = array(); 
-$_SESSION['success'] = "";
 $db= mysqli_connect($host, $user, $pass, $dbname);
+
+
+      $query6 = "DELETE FROM Cuser";
+      $results5 = mysqli_query($db, $query6) or die ("Error: " .mysqli_error($db));
 
 $message;
 function error_alert($message) { 
@@ -37,6 +39,11 @@ if (isset($_POST['reg_user']))
 	$adress = mysqli_real_escape_string($db,$_POST['adress']);
     $password_1 = mysqli_real_escape_string($db, $_POST['password_1']);
     $password_2 = mysqli_real_escape_string($db, $_POST['password_2']);
+    $_SESSION['username'] = $username;
+
+    $getID = "SELECT usID FROM users WHERE usUsername='$username'";
+    $resultID = mysqli_query($db, $getID) or die ("Error: " .mysqli_error($db));
+    $usID1 = mysqli_fetch_array($resultID, MYSQLI_NUM);
   
     // Ensuring that the user has not left any input field blank
     // error messages will be displayed for every blank input
@@ -45,6 +52,17 @@ if (isset($_POST['reg_user']))
 	if (empty($adress)) { array_push($errors, "Adress is required"); }
     if (empty($password_1)) { array_push($errors, "Password is required"); }
   
+    $pattern = "/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/"; 
+  
+    if (!preg_match($pattern, $password_1)) { 
+        $textAlert = "Password has not fullfill the requirement. it must contain min 1 uppercase and 1 undercase letter, a min of 1 digit and min 1 special character and it must also contain min 8 character";
+        error_alert($errors[] = ($textAlert));
+        echo '<script>';
+        echo 'window.location.href="http://localhost/read2rent/register.php"'; //Redirects the user with JavaScript
+        echo '</script>';
+        die();
+
+    } 
     if ($password_1 != $password_2) {
         error_alert($errors[] = "The two passwords do not match"); 
         echo '<script>';
@@ -66,6 +84,7 @@ if (isset($_POST['reg_user']))
         echo 'window.location.href="http://localhost/read2rent/register.php"'; //Redirects the user with JavaScript
         echo '</script>';
         die();
+
     }else
     if($row0 != 0)
     {
@@ -75,6 +94,7 @@ if (isset($_POST['reg_user']))
         echo 'window.location.href="http://localhost/read2rent/register.php"'; //Redirects the user with JavaScript
         echo '</script>';
         die();
+
     }
 
 	// If the form is error free, then register the user
@@ -88,17 +108,19 @@ if (isset($_POST['reg_user']))
                   VALUES('$username', '$adress','$email', '$password')"; 
          
         mysqli_query($db, $query);
-  
+
+        $query2 = "INSERT INTO Cuser (usID,username) 
+        VALUES('$usID1[0]', '$username')"; 
+
+        mysqli_query($db, $query2);
         // Storing username of the logged in user,
         // in the session variable
-        $_SESSION['username'] = $username;
-         
-        // Welcome message
-        $_SESSION['success'] = "You have logged in";
+
          
         // Page on which the user will be 
         // redirected after logging in
         header('location:http://localhost/read2rent/dashboard.php'); 
+        exit();
     }       
 }
 
@@ -109,7 +131,11 @@ if (isset($_POST['login_user']))
     // Data sanitization to prevent SQL injection
     $username = mysqli_real_escape_string($db, $_POST['username']);
     $password = mysqli_real_escape_string($db, $_POST['password']);
-  
+    $_SESSION['username'] = $username;
+    
+    $getID = "SELECT usID FROM users WHERE usUsername='$username'";
+    $resultID = mysqli_query($db, $getID) or die ("Error: " .mysqli_error($db));
+    $usID1 = mysqli_fetch_array($resultID, MYSQLI_NUM);
     // Error message if the input field is left blank
     if (empty($username)) {
         array_push($errors, "Username is required");
@@ -117,7 +143,7 @@ if (isset($_POST['login_user']))
     if (empty($password)) {
         array_push($errors, "Password is required");
     }
-  
+
     // Checking for the errors
     if (count($errors) == 0) {
          
@@ -127,20 +153,39 @@ if (isset($_POST['login_user']))
         $query = "SELECT * FROM users WHERE usUsername=
                 '$username' AND usPassword='$password'";
         $results = mysqli_query($db, $query) or die ("Error: " .mysqli_error($db));
-  
+        
         // $results = 1 means that one user with the
         // entered username exists
         if (mysqli_num_rows($results) == 1) {
              
+            $checker0 ="SELECT empType from employee where usID='$usID1[0]'";
+            $checker = mysqli_query($db, $checker0) or die ("Error: " .mysqli_error($db));
+            $row3 = mysqli_num_rows($checker);
+            if($row3 != 0)
+            {
+
+               
+
+            $checker1= mysqli_fetch_object($checker);
+            $_SESSION['empType'] = $checkf;
+              $query2 = "INSERT INTO Cuser (usID,username,empType) 
+              VALUES('$usID1[0]', '$username','$checker1->empType')"; 
+               mysqli_query($db, $query2);
+                header('location:http://localhost/read2rent/dashboard.php'); 
+                exit();
+        
+            }
+
             // Storing username in session variable
-            $_SESSION['username'] = $username;
-             
-            // Welcome message
-            $_SESSION['success'] = "You have logged in!";
+            
              
             // Page on which the user is sent
             // to after logging in
+            $query2 = "INSERT INTO Cuser (usID,username) VALUES('$usID1[0]', '$username')"; 
+    
+            mysqli_query($db, $query2);
             header('location:http://localhost/read2rent/dashboard.php'); 
+            exit();
         }
         else {
              
@@ -150,28 +195,4 @@ if (isset($_POST['login_user']))
     }
 }
 
-//Forgot password
-if (isset($_POST['forgot'])) 
-{
-    $email = mysqli_real_escape_string($db, $_POST['email']);
-    
-    $subject = "Password recovery";
-    $txt = " <html> 
-        <head>
-    <title>recovery Mail</title>
-    </head>
-    <body>
-    <p>Clicked the link if you forgot your Read2Rent password. ignored if remember you password: <a href='http://stackoverflow.com'>Open Link</a></p>
-    </body>
-    </html>
-    ";
-
-    $headers  = 'MIME-Version: 1.0' . "\r\n";
-    $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-    $headers .= 'From: nabil010304@gmail.com' . "\r\n";
-
-    $mail = mail($email, $subject, $txt, $headers);
-    
-}
-	/* close db connection */
 ?>
